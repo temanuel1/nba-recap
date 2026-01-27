@@ -1,0 +1,9 @@
+[project]
+name = "nba-recap"
+version = "0.1.0"
+description = "AI-powered NBA game recaps"
+requires-python = ">=3.12"
+dependencies = ["nba_api>=1.11.3"]
+
+[project.scripts]
+recap = "src.main:main"
