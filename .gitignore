@@ -1,4 +1,5 @@
-venv/
+.venv/
 nba_recap.egg-info/
 __pycache__/
 .DS_Store
+.env
