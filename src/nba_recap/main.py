@@ -1,10 +1,26 @@
 import sys
+
 from dotenv import load_dotenv
 
 load_dotenv()
 
 import anthropic
+
 from nba_recap.tools import TOOLS
+
+
+def process_stream_event(event):
+    if event.type == "content_block_delta" and event.delta.type == "text_delta":
+        print(event.delta.text, end="", flush=True)
+    elif event.type == "content_block_start" and event.content_block.type == "tool_use":
+        print(f"\n\n--- Tool Call: {event.content_block.name} ---")
+
+
+def print_tool_inputs(message):
+    for block in message.content:
+        if block.type == "tool_use":
+            print(f"Input: {block.input}")
+            print()
 
 
 def main():
@@ -14,7 +30,6 @@ def main():
         sys.exit(1)
 
     user_input = " ".join(sys.argv[1:])
-
     client = anthropic.Anthropic()
 
     runner = client.beta.messages.tool_runner(
@@ -27,8 +42,14 @@ def main():
         stream=True,
     )
 
-    final_message = runner.until_done()
-    print(final_message.content[0].text)
+    print("\n--- Assistant ---\n")
+    for message_stream in runner:
+        for event in message_stream:
+            process_stream_event(event)
+
+        print_tool_inputs(message_stream.get_final_message())
+
+    print("\n--- Done ---\n")
 
 
 if __name__ == "__main__":

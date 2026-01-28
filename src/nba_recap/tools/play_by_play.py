@@ -1,3 +1,5 @@
+import json
+
 from anthropic import beta_tool
 from nba_api.live.nba.endpoints import PlayByPlay
 
@@ -15,8 +17,7 @@ def play_by_play(game_id: str) -> str:
         actions = data.get("game", {}).get("actions", [])
 
         if not actions:
-            print(f"\nNo play-by-play data found for game {game_id}.\n")
-            return f"\nNo play-by-play data found for game {game_id}.\n"
+            return json.dumps({"error": f"No play-by-play data found for game {game_id}"})
 
         plays = []
         for action in actions:
@@ -38,8 +39,7 @@ def play_by_play(game_id: str) -> str:
             }
             plays.append(play)
 
-        return str(plays)
+        return json.dumps(plays)
 
     except Exception as e:
-        print(f"\nError fetching play-by-play data: {str(e)}\n")
-        return f"\nError fetching play-by-play data: {str(e)}\n"
+        return json.dumps({"error": f"Error fetching play-by-play data: {str(e)}"})
