@@ -7,6 +7,7 @@ load_dotenv()
 import anthropic
 
 from nba_recap.tools import TOOLS
+from nba_recap.prompts import RECAP_PROMPT
 
 
 def process_stream_event(event):
@@ -37,7 +38,7 @@ def main():
         max_tokens=1024,
         tools=TOOLS,
         messages=[
-            {"role": "user", "content": f"Get me a recap of the {user_input} game"}
+            {"role": "user", "content": RECAP_PROMPT.format(user_input=user_input)}
         ],
         stream=True,
     )
