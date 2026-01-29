@@ -36,10 +36,7 @@ def game_finder(team_name: str) -> str:
         # Fetches live NBA scoreboard for today's games
         today = datetime.now().strftime("%Y-%m-%d")
         scoreboard = ScoreboardV2(day_offset=0, game_date=today, league_id="00")
-
-        # Filters games to only include ongoing games
-        games = scoreboard.game_header.get_data_frame()
-        ongoing_games = games[games["GAME_STATUS_ID"].isin([2])]
+        ongoing_games = scoreboard.game_header.get_data_frame()
 
         # Filters games to only include game where specified team is playing
         requested_game = ongoing_games[
