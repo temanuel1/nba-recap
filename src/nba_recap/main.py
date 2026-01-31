@@ -15,6 +15,7 @@ def process_stream_event(event):
         print(event.delta.text, end="", flush=True)
     elif event.type == "content_block_start" and event.content_block.type == "tool_use":
         print(f"\n\n--- Tool Call: {event.content_block.name} ---")
+        print()
 
 
 def print_tool_inputs(message):
@@ -47,8 +48,6 @@ def main():
     for message_stream in runner:
         for event in message_stream:
             process_stream_event(event)
-
-        print_tool_inputs(message_stream.get_final_message())
 
     print("\n--- Done ---\n")
 
